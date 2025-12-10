@@ -136,4 +136,10 @@ LiteRtStatus GpuOptions::SetSyncExecutionModeWaitType(
       Get(), static_cast<LiteRtGpuWaitType>(wait_type));
 }
 
+LiteRtStatus GpuOptions::SetHintFullyDelegatedToSingleDelegate(
+    bool hint_fully_delegated_to_single_delegate) {
+  return LiteRtSetGpuOptionsHintFullyDelegatedToSingleDelegate(
+      Get(), hint_fully_delegated_to_single_delegate);
+}
+
 }  // namespace litert

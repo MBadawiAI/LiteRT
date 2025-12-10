@@ -75,6 +75,9 @@ struct LiteRtGpuOptionsPayloadT {
   bool use_metal_argument_buffers = false;
   // Added in version 2.0.2a1.
   LiteRtGpuWaitType wait_type = kLiteRtGpuWaitTypeDefault;
+  // Set to true to hint that the delegate is fully delegated to a single
+  // delegate.
+  bool hint_fully_delegated_to_single_delegate = false;
 };
 
 namespace litert {
@@ -271,6 +274,15 @@ LiteRtStatus LiteRtSetGpuAcceleratorRuntimeOptionsWaitType(
   LITERT_ASSIGN_OR_RETURN(LiteRtGpuOptionsPayloadT * payload,
                           litert::GetPayload(gpu_accelerator_options));
   payload->wait_type = wait_type;
+  return kLiteRtStatusOk;
+}
+
+LiteRtStatus LiteRtSetGpuOptionsHintFullyDelegatedToSingleDelegate(
+    LiteRtOpaqueOptions gpu_options,
+    bool hint_fully_delegated_to_single_delegate) {
+  LITERT_ASSIGN_OR_RETURN(LiteRtGpuOptionsPayloadT * payload,
+                          litert::GetPayload(gpu_options));
+  payload->hint_fully_delegated_to_single_delegate = enable;
   return kLiteRtStatusOk;
 }
 
@@ -492,5 +504,18 @@ LiteRtStatus LiteRtGetGpuAcceleratorRuntimeOptionsWaitType(
   LITERT_RETURN_IF_ERROR(payload, ErrorStatusBuilder::InvalidArgument())
       << "`payload` cannot be null.";
   *wait_type = payload->wait_type;
+  return kLiteRtStatusOk;
+}
+
+LiteRtStatus LiteRtGetGpuOptionsHintFullyDelegatedToSingleDelegate(
+    bool* hint_fully_delegated_to_single_delegate,
+    LiteRtGpuOptionsPayload payload) {
+  LITERT_RETURN_IF_ERROR(hint_fully_delegated_to_single_delegate,
+                         ErrorStatusBuilder::InvalidArgument())
+      << "`hint_fully_delegated_to_single_delegate` cannot be null.";
+  LITERT_RETURN_IF_ERROR(payload, ErrorStatusBuilder::InvalidArgument())
+      << "`payload` cannot be null.";
+  *hint_fully_delegated_to_single_delegate =
+      payload->hint_fully_delegated_to_single_delegate;
   return kLiteRtStatusOk;
 }

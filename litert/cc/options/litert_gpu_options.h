@@ -110,6 +110,9 @@ class GpuOptions : public litert::OpaqueOptions {
   };
   LiteRtStatus SetSyncExecutionModeWaitType(
       SyncExecutionModeWaitType wait_type);
+
+  LiteRtStatus SetHintFullyDelegatedToSingleDelegate(
+      bool hint_fully_delegated_to_single_delegate);
 };
 
 }  // namespace litert
