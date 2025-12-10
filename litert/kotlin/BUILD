@@ -128,6 +128,7 @@ cc_library(
 #         ":litert_environment_jni",
 #         ":litert_tensor_buffer_jni",
 #         "//litert/c:litert_tflite_runtime_c_api_so_shim",  # runtime
+#         "//tflite/java/src/main/native",  # TFLite JNI
 #     ],
 # )
 # copybara:uncomment_end
@@ -144,6 +145,7 @@ tflite_jni_binary(
         ":litert_environment_jni",
         ":litert_tensor_buffer_jni",
         "//litert/c:litert_tflite_runtime_c_api_so_shim",  # runtime
+        "//tflite/java/src/main/native",  # TFLite JNI
     ],
 )
 
@@ -163,6 +165,28 @@ android_library(
     ],
 )
 
+# TFLite Java sources.
+TFLITE_JAVA_SRCS_COPIED = [
+    # go/keep-sorted start
+    "src/copied_from_tflite/java/org/tensorflow/lite/DataType.java",
+    "src/copied_from_tflite/java/org/tensorflow/lite/DataTypeUtils.java",
+    "src/copied_from_tflite/java/org/tensorflow/lite/Interpreter.java",
+    "src/copied_from_tflite/java/org/tensorflow/lite/InterpreterApi.java",
+    "src/copied_from_tflite/java/org/tensorflow/lite/InterpreterFactory.java",
+    "src/copied_from_tflite/java/org/tensorflow/lite/InterpreterFactoryApi.java",
+    "src/copied_from_tflite/java/org/tensorflow/lite/InterpreterFactoryImpl.java",
+    "src/copied_from_tflite/java/org/tensorflow/lite/InterpreterImpl.java",
+    "src/copied_from_tflite/java/org/tensorflow/lite/NativeInterpreterWrapper.java",
+    "src/copied_from_tflite/java/org/tensorflow/lite/NativeInterpreterWrapperExperimental.java",
+    "src/copied_from_tflite/java/org/tensorflow/lite/NativeSignatureRunnerWrapper.java",
+    "src/copied_from_tflite/java/org/tensorflow/lite/RuntimeFlavor.java",
+    "src/copied_from_tflite/java/org/tensorflow/lite/Tensor.java",
+    "src/copied_from_tflite/java/org/tensorflow/lite/TensorFlowLite.java",
+    "src/copied_from_tflite/java/org/tensorflow/lite/TensorImpl.java",
+    "src/copied_from_tflite/java/org/tensorflow/lite/annotations/UsedByReflection.java",
+    # go/keep-sorted end
+]
+
 # It's needed to include all the files in one target to be able to pack them in the aar.
 kt_android_library(
     name = "litert_kotlin_api",
@@ -175,9 +199,10 @@ kt_android_library(
         "src/main/kotlin/com/google/ai/edge/litert/ModelProvider.kt",
         "src/main/kotlin/com/google/ai/edge/litert/TensorBuffer.kt",
         "src/main/kotlin/com/google/ai/edge/litert/deployment/AiPackModelProvider.kt",
-    ],
+    ] + TFLITE_JAVA_SRCS_COPIED,
     exports_manifest = 1,
     manifest = "src/main/AndroidManifest.xml",
+    proguard_specs = ["//tflite/java:proguard.flags"],
     visibility = ["//visibility:public"],
     deps = [
         ":litert_kotlin_api_native_deps",  # unuseddeps: keep
@@ -187,6 +212,7 @@ kt_android_library(
         "@litert_maven//:org_jetbrains_kotlinx_kotlinx_coroutines_android",
         "@litert_maven//:org_jetbrains_kotlinx_kotlinx_coroutines_guava",
         "@litert_maven//:org_jetbrains_kotlinx_kotlinx_coroutines_play_services",
+        "@org_checkerframework_qual",  # TFLite JAVA deps.
     ],
 )
 
