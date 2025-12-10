@@ -149,6 +149,7 @@ cc_library(
     name = "model_serialize",
     srcs = ["model_serialize.cc"],
     hdrs = ["model_serialize.h"],
+    copts = ["-Wdeprecated-enum-compare"],
     deps = [
         ":litert_to_flatbuffer",
         ":model",
