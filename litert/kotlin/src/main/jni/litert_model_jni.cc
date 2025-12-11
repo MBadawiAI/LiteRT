@@ -284,6 +284,30 @@ JNIEXPORT jlong JNICALL Java_com_google_ai_edge_litert_Model_nativeLoadFile(
   return reinterpret_cast<jlong>(wrapper);
 }
 
+JNIEXPORT jlong JNICALL
+Java_com_google_ai_edge_litert_Model_nativeLoadFromBytes(
+    JNIEnv* env, jclass clazz, jbyteArray bytes) {
+
+  jsize length = env->GetArrayLength(bytes);
+  jbyte* data = env->GetByteArrayElements(bytes, nullptr);
+
+  LiteRtModel model = nullptr;
+  auto status = LiteRtCreateModelFromBuffer(
+      reinterpret_cast<const uint8_t*>(data),
+      static_cast<size_t>(length),
+      &model);
+
+  env->ReleaseByteArrayElements(bytes, data, JNI_ABORT);
+
+  if (status != kLiteRtStatusOk) {
+    ThrowLiteRtException(env, status, "Failed to load model from bytes.");
+    return 0;
+  }
+
+  auto* wrapper = new ModelWrapper(model);  // no buffer since managed by JVM
+  return reinterpret_cast<jlong>(wrapper);
+}
+
 JNIEXPORT void JNICALL Java_com_google_ai_edge_litert_Model_nativeDestroy(
     JNIEnv* env, jclass clazz, jlong handle) {
   auto* wrapper = reinterpret_cast<ModelWrapper*>(handle);

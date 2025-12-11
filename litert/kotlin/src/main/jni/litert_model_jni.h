@@ -27,6 +27,9 @@ JNIEXPORT jlong JNICALL Java_com_google_ai_edge_litert_Model_nativeLoadAsset(
 JNIEXPORT jlong JNICALL Java_com_google_ai_edge_litert_Model_nativeLoadFile(
     JNIEnv* env, jclass clazz, jstring file_path);
 
+JNIEXPORT jlong JNICALL Java_com_google_ai_edge_litert_Model_nativeLoadFromBytes(
+    JNIEnv* env, jclass clazz, jbyteArray bytes);
+
 JNIEXPORT void JNICALL Java_com_google_ai_edge_litert_Model_nativeDestroy(
     JNIEnv* env, jclass clazz, jlong handle);
 
